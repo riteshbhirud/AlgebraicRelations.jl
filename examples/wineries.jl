@@ -2,6 +2,7 @@ using ACSets
 using Catlab
 using AlgebraicRelations
 using SQLite, DBInterface
+using FunSQL
 
 τ = AlgebraicRelations.Fabric.DatabaseDS.DBSourceTrait()
 fabric = DataFabric()

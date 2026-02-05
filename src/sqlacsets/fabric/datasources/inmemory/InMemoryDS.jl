@@ -40,9 +40,9 @@ function Fabric.columntypes(x::ACSet)
     Dict([name => attrtype_mapping[attrtype] for (name, _, attrtype) in acset_schema(x).attrs]...)
 end
 
-# function DenseACSets.acset_schema(m::InMemory)
-#     acset_schema(m.value)
-# end
+function ACSets.acset_schema(m::InMemory)
+    acset_schema(m.value)
+end
 
 function ACSetInterface.nparts(m::InMemory, args...)
     nparts(m.value, args...)

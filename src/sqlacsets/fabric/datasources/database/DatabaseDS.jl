@@ -49,12 +49,26 @@ end
 
 Base.nameof(source::DBSource) = nothing
 
+# Non-trait reconnect! for direct use
+function Fabric.reconnect!(source::DBSource)
+    source.conn = FunSQL.DB(source.conn.raw, catalog=FunSQL.reflect(source.conn.raw))
+    source
+end
+
 Fabric.catalog(source::DBSource) = source.conn.catalog
 
 # column => type
 function Fabric.columntypes(source::DBSource)
     result = get_schema(source)
     Dict(Symbol(row.column_name) => row.is_primary_key == 1 ? PK : from_sql(source, row.data_type) for row in eachrow(result))
+end
+
+# Direct execute! for AbstractString (not via trait dispatch)
+function Fabric.execute!(db::DBSource, stmt::AbstractString, formatter=DataFrame)
+    result = DBInterface.execute(db.conn.raw, stmt)
+    reconnect!(db)
+    isnothing(formatter) && return result
+    formatter(result)
 end
 
 # TODO could probably implement `isDML(::AbstractSQLTerm) = true` for types that are
@@ -70,7 +84,7 @@ function Fabric.execute!(db::DBSource, stmt::AbstractSQLTerm, formatter=DataFram
 end
 export execute!
 
-# DenseACSets.acset_schema(db::DBSource) = db.schema
+ACSets.acset_schema(db::DBSource) = db.schema
 
 include("acsets_interface.jl")
 
