@@ -143,12 +143,10 @@ import Catlab: ACSet
 
 @interface ThDataSource begin
     @import ACSet::TYPE
-    @import Vector::TYPE
-    @import AbstractString::TYPE
-    Source::TYPE # Type of data 
+    Source::TYPE # Type of data
+    Stmt::TYPE   # Statement type (for Julia 1.12 compatibility)
     reconnect!(s::Source)::Source
-    # incident(s::Source, r::Row, c::Column)::Vector{Row}
-    execute!(d::Source, stmt::AbstractString)::ACSet # TODO stmt, formatter
+    execute!(d::Source, stmt::Stmt)::ACSet # TODO stmt, formatter
     schema(d::Source)::ACSet
 end
 export ThDataSource, reconnect!, execute!
@@ -157,8 +155,8 @@ export ThDataSource, reconnect!, execute!
     # this will store the connections, their schema, and values
     graph::DataSourceGraph = DataSourceGraph()
     catalog::Catalog = Catalog()
-    queries::Vector{QueryResultWrapper} = QueryResultWrapper[]
-    log::Vector{Log} = Log[]
+    queries::Base.Vector{QueryResultWrapper} = QueryResultWrapper[]
+    log::Base.Vector{Log} = Log[]
 end
 export DataFabric
 
@@ -173,15 +171,15 @@ export queries
 function trait end
 export trait
 
-struct FabricTrait end 
+struct FabricTrait end
 trait(::DataFabric) = FabricTrait()
 
-TraitInterfaces.@instance ThDataSource{Source=DataFabric} [model::FabricTrait] begin
+TraitInterfaces.@instance ThDataSource{Source=DataFabric, Stmt=AbstractString} [model::FabricTrait] begin
     """ Reconnect to all data sources on nodes """
     function reconnect!(fabric::DataFabric)
         foreach(parts(fabric.graph, :V)) do i
             value = subpart(fabric.graph, i, :value)
-            τ = trait(value) 
+            τ = trait(value)
             fabric.graph[i, :value] = reconnect![τ](value)
         end
         fabric

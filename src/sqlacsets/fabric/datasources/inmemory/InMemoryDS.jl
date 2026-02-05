@@ -23,9 +23,9 @@ export InMemory
 struct InMemoryTrait end
 trait(::InMemory) = InMemoryTrait()
 
-TraitInterfaces.@instance ThDataSource{Source=InMemory} [model::InMemoryTrait] begin 
+TraitInterfaces.@instance ThDataSource{Source=InMemory, Stmt=AbstractString} [model::InMemoryTrait] begin
     reconnect!(m::InMemory)::InMemory = m
-    execute!(m::InMemory, stmt::AbstractString)::Vector{Int} = Int[]
+    execute!(m::InMemory, stmt::AbstractString) = Int[]
     schema(m::InMemory) = DenseACSets.acset_schema(value)
 end
 

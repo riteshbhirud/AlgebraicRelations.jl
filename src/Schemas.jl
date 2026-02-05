@@ -2,6 +2,7 @@ module Schemas
 
 using Catlab
 using Catlab.CategoricalAlgebra
+import Catlab: Presentation
 using FunSQL: SQLTable
 
 export render_schema, SQLSchema

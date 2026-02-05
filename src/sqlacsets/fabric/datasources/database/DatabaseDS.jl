@@ -31,7 +31,7 @@ end
 struct DBSourceTrait end
 trait(::DBSource) = DBSourceTrait() 
 
-TraitInterfaces.@instance ThDataSource{Source=DBSource} [model::DBSourceTrait] begin
+TraitInterfaces.@instance ThDataSource{Source=DBSource, Stmt=AbstractString} [model::DBSourceTrait] begin
     function reconnect!(source::DBSource)
         source.conn = FunSQL.DB(source.conn.raw, catalog=FunSQL.reflect(source.conn.raw))
         source
@@ -40,7 +40,7 @@ TraitInterfaces.@instance ThDataSource{Source=DBSource} [model::DBSourceTrait] b
         result = DBInterface.execute(source.conn.raw, stmt)
         reconnect![model](source)
         DataFrame(result)
-        # nothing 
+        # nothing
     end
     function schema(source::DBSource)
         source.schema
