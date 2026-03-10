@@ -49,7 +49,7 @@ export subpart
 #     nparts(fabric.graph
 # end
 
-function ACSetInterface.subpart(fabric::DataFabric, fks::Vector{FK{T}}, column::Symbol; formatter=identity) where T
+function ACSetInterface.subpart(fabric::DataFabric, fks::Base.Vector{FK{T}}, column::Symbol; formatter=identity) where T
     out = subpart(fabric, getproperty.(fks, :val), column)
     formatter(out)
 end
@@ -94,13 +94,13 @@ function ACSetInterface.subpart(fabric::DataFabric, column::Pair{Symbol, Symbol}
     formatter(out)
 end
 
-function ACSetInterface.subpart(fabric::DataFabric, columns::Vector{Symbol}; formatter=identity)
+function ACSetInterface.subpart(fabric::DataFabric, columns::Base.Vector{Symbol}; formatter=identity)
     out = subpart(fabric, :, columns)
     formatter(out)
 end
 
 # TODO wrap in datA frame here
-function ACSetInterface.subpart(fabric::DataFabric, id=(:), columns::Vector{Symbol}=[]; formatter=identity)
+function ACSetInterface.subpart(fabric::DataFabric, id=(:), columns::Base.Vector{Symbol}=[]; formatter=identity)
     out = reduce((new_id, column) -> subpart(fabric, new_id, column), columns; init=id)
     formatter(out)
 end
@@ -128,7 +128,7 @@ end
 export incident
 
 # incident(fabric, (3, :b), ([3,4], :c))
-function ACSetInterface.incident(fabric::DataFabric, kvs::Vector{Tuple{<:T, Symbol}}; formatter=identity) where T
+function ACSetInterface.incident(fabric::DataFabric, kvs::Base.Vector{Tuple{<:T, Symbol}}; formatter=identity) where T
     ids = map([incident(fabric, val, col; formatter=identity) for (val,col) in kvs]) do result
         result isa DataFrame ? result._id : result
     end
@@ -140,7 +140,7 @@ end
 # TODO returns ids of matching rows
 
 # TODO does not work with DataStore
-function ACSetInterface.incident(fabric::DataFabric, id, columns::Vector{Symbol}; formatter=identity)
+function ACSetInterface.incident(fabric::DataFabric, id, columns::Base.Vector{Symbol}; formatter=identity)
     @info columns
     out = reduce((new_id, column) -> incident(fabric, new_id, column), columns; init=id)
     formatter(out)

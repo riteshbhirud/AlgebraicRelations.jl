@@ -185,7 +185,7 @@ TraitInterfaces.@instance ThDataSource{Source=DataFabric, Stmt=AbstractString} [
         fabric
     end
     """ TODO """
-    function execute!(fabric::DataFabric, stmt::AbstractString)
+    function execute!(fabric::DataFabric, stmt::Core.AbstractString)
         # execute!(fabric.graph[source_id, :value], stmt)
         nothing
     end
@@ -195,7 +195,7 @@ TraitInterfaces.@instance ThDataSource{Source=DataFabric, Stmt=AbstractString} [
     end
 end
 
-function reflect_source!(fabric::DataFabric, vs::Vector{Int})
+function reflect_source!(fabric::DataFabric, vs::Base.Vector{Int})
     foreach(vs) do source_id
         source = subpart(fabric.graph, source_id, :value)
         schema = SQLSchema(Presentation(acset_schema(source)))
@@ -204,7 +204,7 @@ function reflect_source!(fabric::DataFabric, vs::Vector{Int})
     end
 end
 
-function reflect_edges!(fabric::DataFabric, es::Vector{Int})
+function reflect_edges!(fabric::DataFabric, es::Base.Vector{Int})
     # TODO improve this
     foreach(es) do edge_id
         src, tgt, edgelabel = subpart.(Ref(fabric.graph), edge_id, [:src, :tgt, :edgelabel])

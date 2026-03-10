@@ -9,7 +9,7 @@ using MLStyle: @match, @λ
 using StructEquality
 
 struct PairIterator{T}
-    data::Vector{T} 
+    data::Base.Vector{T}
 end
 
 function Base.iterate(iter::PairIterator, state::Int=1)
@@ -35,7 +35,7 @@ function box_junctions(diag::UntypedNamedRelationDiagram, b::Int)
 end
 export box_junctions
 
-function neighboring_boxes(diag::UntypedNamedRelationDiagram, b::Int, path::Vector{Int}=Int[])
+function neighboring_boxes(diag::UntypedNamedRelationDiagram, b::Int, path::Base.Vector{Int}=Int[])
     junctions_of_box_id = box_junctions(diag, b)
     neighbor = setdiff(diag[vcat(incident(diag, junctions_of_box_id, :junction)...), :box], b)
     setdiff(neighbor, path)
@@ -84,7 +84,7 @@ struct JQParam
 end
 export JQParam
 
-function query_boxes(fabric::DataFabric, diagram::UntypedNamedRelationDiagram, left::Int, right::Int; params::Union{JQParam, Vector{JQParam}}=JQParam[])
+function query_boxes(fabric::DataFabric, diagram::UntypedNamedRelationDiagram, left::Int, right::Int; params::Union{JQParam, Base.Vector{JQParam}}=JQParam[])
     # box
     box = diagram[left, :name]
     # params
